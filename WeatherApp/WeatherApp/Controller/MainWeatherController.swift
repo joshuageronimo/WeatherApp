@@ -12,12 +12,17 @@ import Log
 
 class MainWeatherController: UIViewController {
     
+    
     // MARK: UI ELEMENTS
+    @IBOutlet weak var weatherCollectionView: UICollectionView!
+   
     
     
     // MARK: CONSTANT & VARIABLE
+   
     fileprivate var locationManager = CLLocationManager()
     fileprivate let log = Logger()
+    fileprivate var weatherData: [WeatherData] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,8 +30,11 @@ class MainWeatherController: UIViewController {
         self.title = "Weather"
         log.trace("ViewDidLoad called")
         checkLocationServices()
+        
+        
     }
     
+    // Fetch weather data from DarkSky API
     fileprivate func fetchWeatherData() {
         log.trace("Attempting to fetch weather data")
         // get the devices current location coordinates
@@ -34,8 +42,27 @@ class MainWeatherController: UIViewController {
         guard let longitude = locationManager.location?.coordinate.longitude else { return }
         // create url string - for this case just string of latitude & longitude
         let url = "\(latitude),\(longitude)"
-        DataService.shared.fetchData(urlString: url) { (weather: Weather?, error: Error?) in
-            
+        DataService.shared.fetchData(urlString: url) { [unowned self] (weather: Weather?, error: Error?) in
+            if let weatherData = weather?.daily.data {
+                self.weatherData = weatherData
+                DispatchQueue.main.async {
+                    self.weatherCollectionView.reloadData()
+                }
+            }
+        }
+    }
+    
+    // Set the navigation title to the user's current city
+    fileprivate func setNavigationtitle() {
+        if let lastLocation = locationManager.location {
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(lastLocation) { [weak self] (placemarks, error) in
+                if error == nil {
+                    if let firstLocation = placemarks?[0], let cityName = firstLocation.locality {
+                        self?.title = cityName.capitalized
+                    }
+                }
+            }
         }
     }
     
@@ -58,6 +85,7 @@ class MainWeatherController: UIViewController {
         switch CLLocationManager.authorizationStatus() {
         case .authorizedWhenInUse, .authorizedAlways:
             log.trace("Location is enable!")
+            setNavigationtitle()
             fetchWeatherData()
         case .denied:
             // Show alert instructing them how to turn on permissions
@@ -93,11 +121,12 @@ extension MainWeatherController: UICollectionViewDelegate {
 
 extension MainWeatherController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
+        return weatherData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeatherDayCell", for: indexPath) as? WeatherDayCell {
+            cell.weatherData = weatherData[indexPath.item]
             return cell
         }
         return WeatherDayCell()

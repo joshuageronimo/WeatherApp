@@ -42,8 +42,8 @@
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summary" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CIN-J7-gu1">
-                                                            <rect key="frame" x="20" y="59.5" width="249" height="34.5"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summary" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="13" translatesAutoresizingMaskIntoConstraints="NO" id="CIN-J7-gu1">
+                                                            <rect key="frame" x="20" y="59.5" width="249" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -84,7 +84,6 @@
                                                         <constraint firstItem="htC-LV-42g" firstAttribute="top" secondItem="NrI-9I-I7B" secondAttribute="top" constant="20" id="ExX-b5-2Uh"/>
                                                         <constraint firstItem="d8Q-G4-W9S" firstAttribute="top" secondItem="fgV-q0-Pog" secondAttribute="bottom" constant="10" id="FL6-EV-Xnw"/>
                                                         <constraint firstAttribute="trailing" secondItem="fgV-q0-Pog" secondAttribute="trailing" constant="40" id="IM1-4D-VMU"/>
-                                                        <constraint firstAttribute="trailing" secondItem="smB-rk-i5K" secondAttribute="trailing" constant="26.5" id="J3X-xw-gUO"/>
                                                         <constraint firstItem="smB-rk-i5K" firstAttribute="top" secondItem="d8Q-G4-W9S" secondAttribute="bottom" constant="8" id="O4v-hP-O9s"/>
                                                         <constraint firstItem="CIN-J7-gu1" firstAttribute="leading" secondItem="htC-LV-42g" secondAttribute="leading" id="WWi-Zn-sP1"/>
                                                         <constraint firstAttribute="bottom" secondItem="Viz-KW-34u" secondAttribute="bottom" id="cbZ-aJ-yFn"/>
@@ -93,7 +92,6 @@
                                                         <constraint firstItem="d8Q-G4-W9S" firstAttribute="leading" secondItem="CIN-J7-gu1" secondAttribute="trailing" constant="50" id="gTM-qn-gHZ"/>
                                                         <constraint firstItem="fgV-q0-Pog" firstAttribute="leading" secondItem="htC-LV-42g" secondAttribute="trailing" constant="8" symbolic="YES" id="ruB-18-Wsj"/>
                                                         <constraint firstItem="Viz-KW-34u" firstAttribute="leading" secondItem="NrI-9I-I7B" secondAttribute="leading" id="tM3-dy-XjX"/>
-                                                        <constraint firstItem="Viz-KW-34u" firstAttribute="top" secondItem="CIN-J7-gu1" secondAttribute="bottom" constant="20" id="zQ3-35-QUR"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
@@ -107,6 +105,10 @@
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="414" height="115"/>
                                         <connections>
+                                            <outlet property="dayLabel" destination="htC-LV-42g" id="dIx-Ew-w4o"/>
+                                            <outlet property="daySummaryLabel" destination="CIN-J7-gu1" id="oMV-bN-qZf"/>
+                                            <outlet property="highTempLabel" destination="d8Q-G4-W9S" id="LGM-MI-oqo"/>
+                                            <outlet property="lowTempLabel" destination="smB-rk-i5K" id="RNQ-AD-FAR"/>
                                             <outlet property="weatherIcon" destination="fgV-q0-Pog" id="QFY-81-PgC"/>
                                         </connections>
                                     </collectionViewCell>
@@ -127,6 +129,9 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="X9L-XL-8aj"/>
+                    <connections>
+                        <outlet property="weatherCollectionView" destination="GkX-k8-9Rc" id="ePg-pz-2wQ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
