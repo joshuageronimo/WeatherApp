@@ -23,6 +23,7 @@ class MainWeatherController: UIViewController {
     fileprivate var locationManager = CLLocationManager()
     fileprivate let log = Logger()
     fileprivate var weatherData: [WeatherData] = []
+    fileprivate let segueIdentifierToWeatherDetailController = "toWeatherDetailController"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,6 +63,18 @@ class MainWeatherController: UIViewController {
                         self?.title = cityName.capitalized
                     }
                 }
+            }
+        }
+    }
+    
+    // MARK: NAVIGATION
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == segueIdentifierToWeatherDetailController {
+            
+            if let destinationController = segue.destination as? WeatherDetailController {
+                guard let weatherInfo = sender as? WeatherData else { return }
+                destinationController.weatherInfo = weatherInfo
             }
         }
     }
@@ -116,6 +129,9 @@ extension MainWeatherController: CLLocationManagerDelegate {
 extension MainWeatherController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         log.trace("cell is tapped")
+        let weatherInfo = weatherData[indexPath.item]
+        performSegue(withIdentifier: segueIdentifierToWeatherDetailController, sender: weatherInfo)
+        
     }
 }
 

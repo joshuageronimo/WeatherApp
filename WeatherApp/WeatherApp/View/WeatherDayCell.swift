@@ -25,7 +25,6 @@ class WeatherDayCell: UICollectionViewCell {
                 highTempLabel.text = "High: \(weatherData.temperatureMax)°"
                 lowTempLabel.text = "Low: \(weatherData.temperatureMin)°"
                 weatherIcon.image = UIImage(named: weatherData.icon)
-                
             }
         }
     }
