@@ -12,12 +12,17 @@ import Log
 
 class MainWeatherController: UIViewController {
     
+    // MARK: UI ELEMENTS
+    
+    
+    // MARK: CONSTANT & VARIABLE
     fileprivate var locationManager = CLLocationManager()
     fileprivate let log = Logger()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        self.title = "Weather"
         log.trace("ViewDidLoad called")
         checkLocationServices()
     }
@@ -68,13 +73,44 @@ class MainWeatherController: UIViewController {
     }
 }
 
-// MARK: EXTENSION: CLLocationManagerDelegate
+// MARK: CLLocationManager Delegate Functions
 
 extension MainWeatherController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         log.trace("Location Authorization changed")
         checkLocationAuthorization()
+    }
+}
+
+// MARK: CollectionView Delegates & DataSource functions
+
+extension MainWeatherController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        log.trace("cell is tapped")
+    }
+}
+
+extension MainWeatherController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 8
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeatherDayCell", for: indexPath) as? WeatherDayCell {
+            return cell
+        }
+        return WeatherDayCell()
+    }
+}
+
+extension MainWeatherController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 115)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
     }
 }
 
