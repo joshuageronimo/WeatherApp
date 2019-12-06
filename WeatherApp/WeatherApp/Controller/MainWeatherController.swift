@@ -13,9 +13,11 @@ class MainWeatherController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+        DataService.shared.fetchData(urlString: "42.3601,-71.0589") { (weather: Weather?, error: Error?) in
+            
+        }
+    
     }
-
 
 }
 

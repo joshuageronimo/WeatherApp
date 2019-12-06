@@ -15,6 +15,7 @@
 		76236DEB2399C51200DA07C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76236DEA2399C51200DA07C2 /* Assets.xcassets */; };
 		76236DEE2399C51200DA07C2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76236DEC2399C51200DA07C2 /* LaunchScreen.storyboard */; };
 		764BFBC12399CA7000D02112 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764BFBC02399CA7000D02112 /* DataService.swift */; };
+		764BFBC62399D1DC00D02112 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764BFBC52399D1DC00D02112 /* Weather.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		76236DED2399C51200DA07C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		76236DEF2399C51200DA07C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		764BFBC02399CA7000D02112 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		764BFBC52399D1DC00D02112 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		A016C03AA2C0FD100462417E /* Pods-WeatherApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp.release.xcconfig"; path = "Target Support Files/Pods-WeatherApp/Pods-WeatherApp.release.xcconfig"; sourceTree = "<group>"; };
 		FCCA802439AC34DE32B7D0AA /* Pods_WeatherApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WeatherApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -105,6 +107,7 @@
 		764BFBC42399D16E00D02112 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				764BFBC52399D1DC00D02112 /* Weather.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -245,6 +248,7 @@
 				76236DE22399C50E00DA07C2 /* AppDelegate.swift in Sources */,
 				76236DE42399C50E00DA07C2 /* SceneDelegate.swift in Sources */,
 				764BFBC12399CA7000D02112 /* DataService.swift in Sources */,
+				764BFBC62399D1DC00D02112 /* Weather.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
