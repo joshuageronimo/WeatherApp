@@ -38,7 +38,7 @@ class WeatherDetailController: UIViewController {
         super.viewDidLoad()
         self.title = weatherInfo!.getFormattedDate()
         log.trace("viewDidLoad called")
-        log.info(weatherInfo)
+        log.info(weatherInfo as Any, urlString!, separator: "----", terminator: "")
         fetchWeatherData()
         setInitialInfo()
     }

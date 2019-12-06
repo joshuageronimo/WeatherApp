@@ -14,10 +14,11 @@ class MainWeatherController: UIViewController {
     
     
     // MARK: UI ELEMENTS
+    
     @IBOutlet weak var weatherCollectionView: UICollectionView!
+    fileprivate let refreshControl = UIRefreshControl()
+
    
-    
-    
     // MARK: CONSTANT & VARIABLE
    
     fileprivate var locationManager = CLLocationManager()
@@ -25,15 +26,14 @@ class MainWeatherController: UIViewController {
     fileprivate var weatherData: [WeatherData] = []
     fileprivate let segueIdentifierToWeatherDetailController = "toWeatherDetailController"
     fileprivate var urlString = ""
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         self.title = "Weather"
         log.trace("ViewDidLoad called")
         checkLocationServices()
-        
-        
+        setupRefreshControl()
     }
     
     // Fetch weather data from DarkSky API
@@ -61,6 +61,18 @@ class MainWeatherController: UIViewController {
                 }
             }
         }
+    }
+    
+    // MARK: Refresh Control
+    
+    fileprivate func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        weatherCollectionView.refreshControl = refreshControl
+    }
+    
+    @objc func handleRefresh() {
+        log.trace("Refreshing Data")
+        fetchWeatherData()
     }
     
     // MARK: NAVIGATION
@@ -166,6 +178,9 @@ extension MainWeatherController: DataFetcherDelegate {
         if let weatherData = weather?.daily.data {
             self.weatherData = weatherData
             DispatchQueue.main.async {
+                if self.refreshControl.isRefreshing {
+                    self.refreshControl.endRefreshing()
+                }
                 self.weatherCollectionView.reloadData()
             }
         }
@@ -173,6 +188,11 @@ extension MainWeatherController: DataFetcherDelegate {
     
     func failedToFetchData(error: Error) {
         log.error("Data Fetching Failed", error)
+        DispatchQueue.main.async {
+            if self.refreshControl.isRefreshing {
+                self.refreshControl.endRefreshing()
+            }
+        }
     }
 }
 
