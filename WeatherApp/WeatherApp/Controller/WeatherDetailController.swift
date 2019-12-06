@@ -22,21 +22,39 @@ class WeatherDetailController: UIViewController {
     @IBOutlet weak var humidityLabel: UILabel!
     @IBOutlet weak var windspeedLabel: UILabel!
     
+    @IBOutlet weak var hourlyTableView: UITableView!
+    
+    
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    
+    
+    
     fileprivate let log = Logger()
+    fileprivate var hourlyWeatherData: [WeatherData] = []
     var weatherInfo: WeatherData?
+    var urlString: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = weatherInfo!.getFormattedDate()
         log.trace("viewDidLoad called")
         log.info(weatherInfo)
+        fetchWeatherData()
         setInitialInfo()
     }
     
+    fileprivate func fetchWeatherData() {
+        log.trace("Attempting to fetch weather data")
+        let url = "\(urlString!),\(Int(weatherInfo!.time))"
+        DataService.shared.fetchData(urlString: url, delegate: self)
+    }
+    
+    // MARK: UI
+    
     fileprivate func setInitialInfo() {
         weatherIcon.image = UIImage(named: weatherInfo!.icon)
-        highTempLabel.text = "High: \(weatherInfo!.temperatureMax)°"
-        lowTempLabel.text = "Low: \(weatherInfo!.temperatureMax)°"
+        highTempLabel.text = "High: \(weatherInfo!.temperatureMax!)°"
+        lowTempLabel.text = "Low: \(weatherInfo!.temperatureMax!)°"
         weatherSummaryLabel.text = weatherInfo!.summary
         sunriseTimeLabel.text = "Sunrise: \( weatherInfo!.getFormattedSunriseTime())"
         sunsetTimeLabel.text = "Sunset: \(weatherInfo!.getFormattedSunsetTime())"
@@ -45,4 +63,58 @@ class WeatherDetailController: UIViewController {
         windspeedLabel.text = "Wind speed: \(weatherInfo!.windSpeed) mph"
         
     }
+}
+
+// TABLEVIEW
+
+extension WeatherDetailController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        log.trace("tableview cell tapped")
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
+    }
+}
+
+extension WeatherDetailController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return hourlyWeatherData.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherHourlyCell", for: indexPath) as? WeatherHourlyCell {
+            cell.weatherData = hourlyWeatherData[indexPath.row]
+            return cell
+        }
+        return WeatherHourlyCell()
+    }
+}
+
+
+
+// MARK: NETWORK
+
+extension WeatherDetailController: DataFetcherDelegate {
+    func finishedFetching(data weather: Weather?) {
+        log.trace("Data Fetched")
+        if let weather = weather {
+            hourlyWeatherData = weather.hourly.data
+            DispatchQueue.main.async {
+                self.hourlyTableView.reloadData()
+            }
+        }
+        loadingIndicator.stopAnimating()
+    }
+    
+    func failedToFetchData(error: Error) {
+        log.error("Data Fetching Failed", error)
+        loadingIndicator.stopAnimating()
+    }
+    
+    
 }

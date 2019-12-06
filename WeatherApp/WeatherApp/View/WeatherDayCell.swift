@@ -22,8 +22,8 @@ class WeatherDayCell: UICollectionViewCell {
             if let weatherData = weatherData {
                 dayLabel.text = weatherData.getFormattedDate()
                 daySummaryLabel.text = weatherData.summary
-                highTempLabel.text = "High: \(weatherData.temperatureMax)°"
-                lowTempLabel.text = "Low: \(weatherData.temperatureMin)°"
+                highTempLabel.text = "High: \(weatherData.temperatureMax!)°"
+                lowTempLabel.text = "Low: \(weatherData.temperatureMin!)°"
                 weatherIcon.image = UIImage(named: weatherData.icon)
             }
         }

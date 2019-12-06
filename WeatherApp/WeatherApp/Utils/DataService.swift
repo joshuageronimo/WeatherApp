@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import Log
 
-protocol DataFetcher {
+protocol DataFetcherDelegate {
     func finishedFetching(data weather: Weather?)
     
     func failedToFetchData(error: Error)
@@ -19,12 +19,12 @@ protocol DataFetcher {
 class DataService {
     
     static let shared = DataService()
-    var delegate: DataFetcher?
+    var delegate: DataFetcherDelegate?
     fileprivate let log = Logger()
     fileprivate let baseApiUrl = "https://api.darksky.net/forecast/"
     fileprivate let apiKey = "8428a15e4d22090c9b754dfdf9f97fb6"
     
-    func fetchData(urlString: String, parameters: [String: String]? = nil, delegate: DataFetcher) {
+    func fetchData(urlString: String, parameters: [String: String]? = nil, delegate: DataFetcherDelegate) {
         // set delegate
         self.delegate = delegate
         // create the apiURL

@@ -12,6 +12,7 @@ struct Weather: Decodable {
     let latitude: Double
     let longitude: Double
     let currently: CurrentWeather
+    let hourly: HourlyWeather
     let daily: DailyWeather
 }
 
@@ -21,6 +22,10 @@ struct CurrentWeather: Decodable {
     let summary: String
 }
 
+struct HourlyWeather: Decodable {
+    let data: [WeatherData]
+}
+
 // contains this week and next week's weather data
 struct DailyWeather: Decodable {
     let data: [WeatherData]
@@ -28,13 +33,14 @@ struct DailyWeather: Decodable {
 
 // contains weather data
 struct WeatherData: Decodable {
-    fileprivate let time: Double
+    let time: Double
     let icon: String
     let summary: String
-    let temperatureMax: Double
-    let temperatureMin: Double
-    let sunriseTime: Double
-    let sunsetTime: Double
+    let temperature: Double?
+    let temperatureMax: Double?
+    let temperatureMin: Double?
+    let sunriseTime: Double?
+    let sunsetTime: Double?
     let humidity: Double
     let windSpeed: Double
     
@@ -53,14 +59,6 @@ struct WeatherData: Decodable {
         return formattedDate
     }
     
-    func getFormattedSunriseTime() -> String {
-        return getFormatted(time: sunriseTime)
-    }
-    
-    func getFormattedSunsetTime() -> String {
-        return getFormatted(time: sunsetTime)
-    }
-    
     func getFormatted(time: Double) -> String {
         let date = Date(timeIntervalSince1970: time)
         let dateFormatter = DateFormatter()
@@ -69,6 +67,26 @@ struct WeatherData: Decodable {
         dateFormatter.timeZone = .current
         let formattedDate = dateFormatter.string(from: date)
         return formattedDate
+    }
+    
+    // MARK: Specific Functions for WeatherDetailController
+    
+    func getFormattedSunriseTime() -> String {
+        if let time = sunriseTime {
+            return getFormatted(time: time)
+        }
+        return "N/A"
+    }
+    
+    func getFormattedSunsetTime() -> String {
+        if let time = sunsetTime {
+            return getFormatted(time: time)
+        }
+        return "N/A"
+    }
+    
+    func getFormattedHourlyTime() -> String {
+        return getFormatted(time: time)
     }
 }
 

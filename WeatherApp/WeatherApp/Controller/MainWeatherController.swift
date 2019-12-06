@@ -24,6 +24,7 @@ class MainWeatherController: UIViewController {
     fileprivate let log = Logger()
     fileprivate var weatherData: [WeatherData] = []
     fileprivate let segueIdentifierToWeatherDetailController = "toWeatherDetailController"
+    fileprivate var urlString = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,9 +44,9 @@ class MainWeatherController: UIViewController {
             log.warning("Latitude or Longitude is nil")
             return
         }
-        // create url string - for this case just string of latitude & longitude
-        let url = "\(latitude),\(longitude)"
-        DataService.shared.fetchData(urlString: url, delegate: self)
+        // set url string - for this case just string of latitude & longitude
+        urlString = "\(latitude),\(longitude)"
+        DataService.shared.fetchData(urlString: urlString, delegate: self)
     }
     
     // Set the navigation title to the user's current city
@@ -70,6 +71,7 @@ class MainWeatherController: UIViewController {
             if let destinationController = segue.destination as? WeatherDetailController {
                 guard let weatherInfo = sender as? WeatherData else { return }
                 destinationController.weatherInfo = weatherInfo
+                destinationController.urlString = urlString
             }
         }
     }
@@ -156,7 +158,9 @@ extension MainWeatherController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension MainWeatherController: DataFetcher {
+// MARK: NETWORK
+
+extension MainWeatherController: DataFetcherDelegate {
     func finishedFetching(data weather: Weather?) {
         log.trace("Data Fetched")
         if let weatherData = weather?.daily.data {
