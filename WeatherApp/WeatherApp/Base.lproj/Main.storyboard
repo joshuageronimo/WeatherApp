@@ -247,6 +247,16 @@
                         <viewLayoutGuide key="safeArea" id="Udb-7h-doI"/>
                     </view>
                     <navigationItem key="navigationItem" id="gL6-n2-VDJ"/>
+                    <connections>
+                        <outlet property="highTempLabel" destination="HyJ-CQ-OMS" id="oef-rY-eRU"/>
+                        <outlet property="humidityLabel" destination="m5c-si-aed" id="GdK-y5-m4K"/>
+                        <outlet property="lowTempLabel" destination="NV5-q7-6fo" id="Vp2-OT-jEM"/>
+                        <outlet property="sunriseTimeLabel" destination="JXw-VJ-Ylu" id="Eje-9D-Nf5"/>
+                        <outlet property="sunsetTimeLabel" destination="kTl-kf-kFp" id="5iQ-vx-vbS"/>
+                        <outlet property="weatherIcon" destination="fcw-e8-so0" id="bPM-hj-oVN"/>
+                        <outlet property="weatherSummaryLabel" destination="DJR-h3-CaT" id="o8M-gX-SiF"/>
+                        <outlet property="windspeedLabel" destination="gxI-qh-t7o" id="qOm-ut-mTb"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hL6-WH-Hg0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

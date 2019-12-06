@@ -39,8 +39,10 @@ class MainWeatherController: UIViewController {
     fileprivate func fetchWeatherData() {
         log.trace("Attempting to fetch weather data")
         // get the devices current location coordinates
-        guard let latitude = locationManager.location?.coordinate.latitude else { return }
-        guard let longitude = locationManager.location?.coordinate.longitude else { return }
+        guard let latitude = locationManager.location?.coordinate.latitude, let longitude = locationManager.location?.coordinate.longitude else {
+            log.warning("Latitude or Longitude is nil")
+            return
+        }
         // create url string - for this case just string of latitude & longitude
         let url = "\(latitude),\(longitude)"
         DataService.shared.fetchData(urlString: url) { [unowned self] (weather: Weather?, error: Error?) in

@@ -33,6 +33,10 @@ struct WeatherData: Decodable {
     let summary: String
     let temperatureMax: Double
     let temperatureMin: Double
+    let sunriseTime: Double
+    let sunsetTime: Double
+    let humidity: Double
+    let windSpeed: Double
     
     func getFormattedDate() -> String {
         let date = Date(timeIntervalSince1970: time)
@@ -44,6 +48,24 @@ struct WeatherData: Decodable {
         let dateFormatter = DateFormatter()
         // EEE MM d == Mon, Dec 6
         dateFormatter.setLocalizedDateFormatFromTemplate("EEE MMM d")
+        dateFormatter.timeZone = .current
+        let formattedDate = dateFormatter.string(from: date)
+        return formattedDate
+    }
+    
+    func getFormattedSunriseTime() -> String {
+        return getFormatted(time: sunriseTime)
+    }
+    
+    func getFormattedSunsetTime() -> String {
+        return getFormatted(time: sunsetTime)
+    }
+    
+    func getFormatted(time: Double) -> String {
+        let date = Date(timeIntervalSince1970: time)
+        let dateFormatter = DateFormatter()
+        //timeStyle short == 7:52 PM
+        dateFormatter.timeStyle = .short
         dateFormatter.timeZone = .current
         let formattedDate = dateFormatter.string(from: date)
         return formattedDate
