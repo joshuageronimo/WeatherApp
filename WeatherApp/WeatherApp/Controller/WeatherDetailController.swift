@@ -53,15 +53,13 @@ class WeatherDetailController: UIViewController {
     
     fileprivate func setInitialInfo() {
         weatherIcon.image = UIImage(named: weatherInfo!.icon)
-        highTempLabel.text = "High: \(weatherInfo!.temperatureMax!)°"
-        lowTempLabel.text = "Low: \(weatherInfo!.temperatureMax!)°"
+        highTempLabel.text = "High: \(weatherInfo!.getFormattedHighTemperature())"
+        lowTempLabel.text = "Low: \(weatherInfo!.getFormattedLowTemperature())"
         weatherSummaryLabel.text = weatherInfo!.summary
-        sunriseTimeLabel.text = "Sunrise: \( weatherInfo!.getFormattedSunriseTime())"
+        sunriseTimeLabel.text = "Sunrise: \(weatherInfo!.getFormattedSunriseTime())"
         sunsetTimeLabel.text = "Sunset: \(weatherInfo!.getFormattedSunsetTime())"
-        
         humidityLabel.text = "Humidity: \(weatherInfo!.humidity)"
         windspeedLabel.text = "Wind speed: \(weatherInfo!.windSpeed) mph"
-        
     }
 }
 

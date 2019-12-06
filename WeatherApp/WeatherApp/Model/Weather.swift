@@ -59,14 +59,12 @@ struct WeatherData: Decodable {
         return formattedDate
     }
     
-    func getFormatted(time: Double) -> String {
-        let date = Date(timeIntervalSince1970: time)
-        let dateFormatter = DateFormatter()
-        //timeStyle short == 7:52 PM
-        dateFormatter.timeStyle = .short
-        dateFormatter.timeZone = .current
-        let formattedDate = dateFormatter.string(from: date)
-        return formattedDate
+    func getFormattedHighTemperature() -> String {
+        return getFormatted(weather: temperatureMax)
+    }
+    
+    func getFormattedLowTemperature() -> String {
+        return getFormatted(weather: temperatureMin)
     }
     
     // MARK: Specific Functions for WeatherDetailController
@@ -85,8 +83,31 @@ struct WeatherData: Decodable {
         return "N/A"
     }
     
+    func getFormattedHourlyTemperature() -> String {
+        return getFormatted(weather: temperature)
+    }
+    
     func getFormattedHourlyTime() -> String {
         return getFormatted(time: time)
+    }
+    
+    // MARK: HELPER Methods
+    
+    func getFormatted(time: Double) -> String {
+        let date = Date(timeIntervalSince1970: time)
+        let dateFormatter = DateFormatter()
+        //timeStyle short == 7:52 PM
+        dateFormatter.timeStyle = .short
+        dateFormatter.timeZone = .current
+        let formattedDate = dateFormatter.string(from: date)
+        return formattedDate
+    }
+    
+    func getFormatted(weather: Double?) -> String {
+        if let weather = weather {
+            return "\(weather)°"
+        }
+        return "N/A"
     }
 }
 
