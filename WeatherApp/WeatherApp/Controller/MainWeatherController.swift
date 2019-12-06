@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MainWeatherController.swift
 //  WeatherApp
 //
 //  Created by Joshua Geronimo on 12/5/19.
@@ -8,11 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class MainWeatherController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
     }
 
 
