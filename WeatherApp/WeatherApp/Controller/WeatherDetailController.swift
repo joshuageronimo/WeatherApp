@@ -16,35 +16,35 @@ class WeatherDetailController: UIViewController {
     @IBOutlet weak var highTempLabel: UILabel!
     @IBOutlet weak var lowTempLabel: UILabel!
     @IBOutlet weak var weatherSummaryLabel: UILabel!
-    
     @IBOutlet weak var sunriseTimeLabel: UILabel!
     @IBOutlet weak var sunsetTimeLabel: UILabel!
     @IBOutlet weak var humidityLabel: UILabel!
     @IBOutlet weak var windspeedLabel: UILabel!
-    
     @IBOutlet weak var hourlyTableView: UITableView!
-    
-    
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
-    
-    
     
     fileprivate let log = Logger()
     fileprivate var hourlyWeatherData: [WeatherData] = []
     var weatherInfo: WeatherData?
     var urlString: String?
     
+    // MARK: Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = weatherInfo!.getFormattedDate()
         log.trace("viewDidLoad called")
-        log.info(weatherInfo as Any, urlString!, separator: "----", terminator: "")
         fetchWeatherData()
         setInitialInfo()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        log.trace("viewWillDisappear called")
+    }
+    
+    
     fileprivate func fetchWeatherData() {
-        log.trace("Attempting to fetch weather data")
+        log.trace("Attempting to fetch hourly weather data")
         let url = "\(urlString!),\(Int(weatherInfo!.time))"
         DataService.shared.fetchData(urlString: url, delegate: self)
     }
@@ -66,10 +66,6 @@ class WeatherDetailController: UIViewController {
 // TABLEVIEW
 
 extension WeatherDetailController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        log.trace("tableview cell tapped")
-    }
-
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
@@ -81,7 +77,9 @@ extension WeatherDetailController: UITableViewDelegate {
 
 extension WeatherDetailController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return hourlyWeatherData.count
+        let numberOfRows = hourlyWeatherData.count
+        log.info("Number of rows \(numberOfRows)")
+        return numberOfRows
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -92,8 +90,6 @@ extension WeatherDetailController: UITableViewDataSource {
         return WeatherHourlyCell()
     }
 }
-
-
 
 // MARK: NETWORK
 
@@ -113,6 +109,4 @@ extension WeatherDetailController: DataFetcherDelegate {
         log.error("Data Fetching Failed", error)
         loadingIndicator.stopAnimating()
     }
-    
-    
 }
