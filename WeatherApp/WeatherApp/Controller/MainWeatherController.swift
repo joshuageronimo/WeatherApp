@@ -45,14 +45,7 @@ class MainWeatherController: UIViewController {
         }
         // create url string - for this case just string of latitude & longitude
         let url = "\(latitude),\(longitude)"
-        DataService.shared.fetchData(urlString: url) { [unowned self] (weather: Weather?, error: Error?) in
-            if let weatherData = weather?.daily.data {
-                self.weatherData = weatherData
-                DispatchQueue.main.async {
-                    self.weatherCollectionView.reloadData()
-                }
-            }
-        }
+        DataService.shared.fetchData(urlString: url, delegate: self)
     }
     
     // Set the navigation title to the user's current city
@@ -158,6 +151,24 @@ extension MainWeatherController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+        
+        
+    }
+}
+
+extension MainWeatherController: DataFetcher {
+    func finishedFetching(data weather: Weather?) {
+        log.trace("Data Fetched")
+        if let weatherData = weather?.daily.data {
+            self.weatherData = weatherData
+            DispatchQueue.main.async {
+                self.weatherCollectionView.reloadData()
+            }
+        }
+    }
+    
+    func failedToFetchData(error: Error) {
+        log.error("Data Fetching Failed", error)
     }
 }
 
