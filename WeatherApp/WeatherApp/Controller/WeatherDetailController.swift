@@ -46,7 +46,28 @@ class WeatherDetailController: UIViewController {
     fileprivate func fetchWeatherData() {
         log.trace("Attempting to fetch hourly weather data")
         let url = "\(urlString!),\(Int(weatherInfo!.time))"
-        DataService.shared.fetchData(urlString: url, delegate: self)
+        DataService.shared.fetchData(urlString: url) { [unowned self] (data: Weather?, error: Error?) in
+            if let error = error {
+                self.failedToFetchData(error: error)
+            }
+            self.finishedFetching(data: data)
+        }
+    }
+    
+    func finishedFetching(data weather: Weather?) {
+        log.trace("Data Fetched")
+        if let weather = weather {
+            hourlyWeatherData = weather.hourly.data
+            DispatchQueue.main.async {
+                self.hourlyTableView.reloadData()
+            }
+        }
+        loadingIndicator.stopAnimating()
+    }
+    
+    func failedToFetchData(error: Error) {
+        log.error("Data Fetching Failed", error)
+        loadingIndicator.stopAnimating()
     }
     
     // MARK: UI
@@ -88,25 +109,5 @@ extension WeatherDetailController: UITableViewDataSource {
             return cell
         }
         return WeatherHourlyCell()
-    }
-}
-
-// MARK: NETWORK
-
-extension WeatherDetailController: DataFetcherDelegate {
-    func finishedFetching(data weather: Weather?) {
-        log.trace("Data Fetched")
-        if let weather = weather {
-            hourlyWeatherData = weather.hourly.data
-            DispatchQueue.main.async {
-                self.hourlyTableView.reloadData()
-            }
-        }
-        loadingIndicator.stopAnimating()
-    }
-    
-    func failedToFetchData(error: Error) {
-        log.error("Data Fetching Failed", error)
-        loadingIndicator.stopAnimating()
     }
 }

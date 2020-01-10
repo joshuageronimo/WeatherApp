@@ -76,7 +76,31 @@ class MainWeatherController: UIViewController {
         }
         // set url string - for this case just string of latitude & longitude
         urlString = "\(latitude),\(longitude)"
-        DataService.shared.fetchData(urlString: urlString, delegate: self)
+        DataService.shared.fetchData(urlString: urlString) { [unowned self] (data: Weather?, error: Error?) in
+            if let error = error {
+                self.failedToFetchData(error: error)
+                return
+            }
+            self.finishedFetching(data: data)
+        }
+    }
+    
+    func finishedFetching(data weather: Weather?) {
+        log.trace("Data Fetched")
+        if let weatherData = weather?.daily.data {
+            reloadCollectionViewWith(weatherData)
+            checkIfNeedToSendLocalNotification(weatherData)
+        }
+    }
+    
+    func failedToFetchData(error: Error) {
+        log.error("Data Fetching Failed", error)
+        DispatchQueue.main.async {
+            if self.refreshControl.isRefreshing {
+                self.refreshControl.endRefreshing()
+            }
+        }
+        // handle error code here
     }
     
     // MARK: Refresh Control
@@ -89,6 +113,16 @@ class MainWeatherController: UIViewController {
     @objc func handleRefresh() {
         log.trace("Refreshing Data")
         fetchWeatherData()
+    }
+    fileprivate func reloadCollectionViewWith(_ weatherData: [WeatherData]) {
+        // Reload Tableview with new data
+        self.weatherData = weatherData
+        DispatchQueue.main.async {
+            if self.refreshControl.isRefreshing {
+                self.refreshControl.endRefreshing()
+            }
+            self.weatherCollectionView.reloadData()
+        }
     }
     
     // MARK: NAVIGATION
@@ -173,6 +207,23 @@ class MainWeatherController: UIViewController {
             }
         }
     }
+    
+    fileprivate func checkIfNeedToSendLocalNotification(_ weatherData: [WeatherData]) {
+        // Trigger Local Notification if one or more days of the days of the week is going to snow
+        if !hasShownAlert {
+            log.trace("checking if need to send local notification")
+            let weatherWithSnow = weatherData.filter { $0.icon == "snow" }
+            if weatherWithSnow.count > 0 {
+                log.trace("sending notification")
+                hasShownAlert = true // should only show alert once in the apps lifetime
+                self.sendNotification()
+            } else {
+                log.trace("no need to send notification")
+            }
+        } else {
+            log.trace("notification was already shown")
+        }
+    }
 }
 
 // MARK: CLLocationManager Delegate Functions
@@ -219,58 +270,6 @@ extension MainWeatherController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
-    }
-}
-
-// MARK: NETWORK - DataFetcherDelegate
-
-extension MainWeatherController: DataFetcherDelegate {
-    
-    func finishedFetching(data weather: Weather?) {
-        log.trace("Data Fetched")
-        if let weatherData = weather?.daily.data {
-            reloadTableviewWith(weatherData)
-            checkIfNeedToSendLocalNotification(weatherData)
-        }
-    }
-    
-    func failedToFetchData(error: Error) {
-        log.error("Data Fetching Failed", error)
-        DispatchQueue.main.async {
-            if self.refreshControl.isRefreshing {
-                self.refreshControl.endRefreshing()
-            }
-        }
-    }
-    
-    // HELPER FUNCTIONS
-    
-    fileprivate func reloadTableviewWith(_ weatherData: [WeatherData]) {
-        // Reload Tableview with new data
-        self.weatherData = weatherData
-        DispatchQueue.main.async {
-            if self.refreshControl.isRefreshing {
-                self.refreshControl.endRefreshing()
-            }
-            self.weatherCollectionView.reloadData()
-        }
-    }
-    
-    fileprivate func checkIfNeedToSendLocalNotification(_ weatherData: [WeatherData]) {
-        // Trigger Local Notification if one or more days of the days of the week is going to snow
-        if !hasShownAlert {
-            log.trace("checking if need to send local notification")
-            let weatherWithSnow = weatherData.filter { $0.icon == "snow" }
-            if weatherWithSnow.count > 0 {
-                log.trace("sending notification")
-                hasShownAlert = true // should only show alert once in the apps lifetime
-                self.sendNotification()
-            } else {
-                log.trace("no need to send notification")
-            }
-        } else {
-            log.trace("notification was already shown")
-        }
     }
 }
 
